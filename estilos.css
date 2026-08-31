@@ -48,8 +48,10 @@ nav{position:sticky;top:0;z-index:50;background:rgba(19,30,42,.93);backdrop-filt
   flex:0 0 auto;background:none;border:0;border-bottom:2px solid transparent;
   color:var(--muted);font-family:"IBM Plex Mono";font-size:12px;letter-spacing:.05em;
   padding:15px 14px;cursor:pointer;white-space:nowrap;
+  text-decoration:none;display:inline-flex;align-items:center;
 }
-.tab:hover{color:var(--paper)}
+.tab:hover,.tab:visited:hover{color:var(--paper)}
+.tab:visited{color:var(--muted)}
 .tab[aria-selected="true"]{color:var(--manila);border-bottom-color:var(--manila)}
 .tab:focus-visible{outline:2px solid var(--rule);outline-offset:-4px}
 
