@@ -32,7 +32,7 @@
     <button class="tab" role="tab" aria-selected="false" data-p="p-sql">consultas</button>
     <button class="tab" role="tab" aria-selected="false" data-p="p-pensar">preguntas_trampa</button>
     <button class="tab" role="tab" aria-selected="false" data-p="p-feynman">explícalo_tú</button>
-    <button class="tab" role="tab" aria-selected="false" data-p="p-prueba">generar_prueba</button>
+    <a class="tab" href="prueba.html">generar_prueba ↗</a>
     <button class="tab" role="tab" aria-selected="false" data-p="p-metodo">cómo_estudiar</button>
   </div>
 </nav>
@@ -132,57 +132,9 @@
   </div>
 </section>
 
-<!-- ============ PRUEBA ============ -->
-<section class="panel" id="p-prueba" role="tabpanel">
-  <div class="sec-head"><span class="sec-num">06</span><h2>Generar prueba</h2></div>
-  <p class="lede">Arma una prueba distinta cada vez, con el formato y el nivel de las del ramo. Hazla con cronómetro y sin apuntes: es la única forma de saber cómo estás realmente.</p>
-
-  <div class="card no-print">
-    <div class="grid2">
-      <div class="field">
-        <label class="fld" for="exTipo">Prueba</label>
-        <select id="exTipo">
-          <option value="1">Prueba 1 — Modelo relacional</option>
-          <option value="2">Prueba 2 — SQL</option>
-          <option value="3">Prueba 3 — SQL avanzado</option>
-          <option value="mix">Examen final — mezcla de todo</option>
-        </select>
-      </div>
-      <div class="field">
-        <label class="fld" for="exN">Cantidad de preguntas</label>
-        <input type="number" id="exN" min="4" max="14" value="8">
-      </div>
-      <div class="field">
-        <label class="fld" for="exMin">Minutos</label>
-        <input type="number" id="exMin" min="10" max="120" value="45">
-      </div>
-    </div>
-    <div class="btn-row">
-      <button class="btn" id="exGen">Generar prueba</button>
-      <button class="btn ghost" id="exPrint">Imprimir</button>
-    </div>
-  </div>
-
-  <div id="exWrap" hidden>
-    <div class="card no-print" style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
-      <div><span class="timer" id="exTimer">45:00</span></div>
-      <button class="btn ghost" id="exPause">Pausar</button>
-      <button class="btn" id="exFinish" style="margin-left:auto">Terminar y corregir</button>
-    </div>
-    <div class="card" id="exBody"></div>
-    <div class="card no-print" id="exResult" hidden>
-      <h3 style="margin-top:0">Resultado</h3>
-      <div class="big" id="exScore">—</div>
-      <div class="scorebar"><i id="exBar"></i></div>
-      <p id="exVerdict" style="color:#C3D2E0;font-size:15px"></p>
-      <p class="note" id="exWeak"></p>
-    </div>
-  </div>
-</section>
-
 <!-- ============ MÉTODO ============ -->
 <section class="panel" id="p-metodo" role="tabpanel">
-  <div class="sec-head"><span class="sec-num">07</span><h2>Cómo estudiar esto</h2></div>
+  <div class="sec-head"><span class="sec-num">06</span><h2>Cómo estudiar esto</h2></div>
   <p class="lede">No es motivación genérica: son los métodos con mejor evidencia aplicados a este ramo en concreto.</p>
 
   <div class="method"><b>Recuerdo activo</b><p>Cierra el apunte y trata de recuperar la respuesta desde cero. Releer se siente productivo y no lo es. Usa la pestaña de tarjetas antes de volver a leer nada.</p></div>
@@ -210,7 +162,6 @@
 <script src="flashcards.js"></script>
 <script src="consultas.js"></script>
 <script src="preguntas.js"></script>
-<script src="pruebas.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
