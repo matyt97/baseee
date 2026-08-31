@@ -13,7 +13,7 @@ No necesita instalación ni servidor: es HTML, CSS y JavaScript sin dependencias
 | Consultas | 11 ejercicios de SQL con solución y nota sobre la trampa de cada uno. |
 | Preguntas trampa | 12 preguntas de interrogación elaborativa sobre el porqué de cada regla. |
 | Explícalo tú | Técnica Feynman: explicar el concepto con tus palabras y contrastar con los puntos clave. |
-| Generar prueba | Genera pruebas aleatorias (P1, P2, P3 o examen final) con cronómetro, pauta y nota estimada en escala 1–7. |
+| Generar prueba | Genera pruebas aleatorias (P1, P2, P3 o examen final) con cronómetro, pauta y nota estimada en escala 1–7. Vive en `prueba.html`, una página aparte que no carga tarjetas, consultas ni apuntes, para que no tengas nada a mano mientras rindes. |
 | Cómo estudiar | Métodos de estudio aplicados al ramo y plan de tres semanas. |
 
 Todo lo que escribes se guarda automáticamente en el navegador.
@@ -33,20 +33,17 @@ cd base-de-datos-ucen
 
 ```
 .
-├── index.html                  Estructura de la página
-├── assets/
-│   ├── css/
-│   │   └── estilos.css         Estilos y sistema de diseño
-│   └── js/
-│       ├── app.js              Lógica: navegación, tarjetas, cronómetro, corrección
-│       └── data/
-│           ├── schema.js       Tablas del esquema HR
-│           ├── flashcards.js   Banco de tarjetas
-│           ├── consultas.js    Ejercicios de SQL
-│           ├── preguntas.js    Preguntas trampa y temas Feynman
-│           └── pruebas.js      Banco de preguntas de prueba
-├── docs/
-│   └── apuntes.md              Apuntes completos del ramo
+├── index.html          Sala de estudio: esquema, tarjetas, consultas, preguntas trampa, Feynman, método
+├── prueba.html          Generador de pruebas, página aparte y sin acceso al resto del material
+├── estilos.css          Estilos y sistema de diseño (compartido por ambas páginas)
+├── app.js              Lógica de index.html: navegación, tarjetas, cronómetro de reconstrucción, corrección SQL, Feynman
+├── examen.js            Lógica de prueba.html: generación de la prueba, cronómetro y autocorrección
+├── schema.js           Tablas del esquema HR
+├── flashcards.js       Banco de tarjetas
+├── consultas.js        Ejercicios de SQL
+├── preguntas.js        Preguntas trampa y temas Feynman
+├── pruebas.js          Banco de preguntas de prueba (usado solo por prueba.html)
+├── apuntes.md          Apuntes completos del ramo
 ├── .gitignore
 ├── LICENSE
 └── README.md
@@ -54,7 +51,7 @@ cd base-de-datos-ucen
 
 ## Agregar contenido
 
-Los bancos de preguntas están separados de la lógica: para ampliarlos basta editar los archivos de `assets/js/data/` sin tocar `app.js`.
+Los bancos de preguntas están separados de la lógica: para ampliarlos basta editar `schema.js`, `flashcards.js`, `consultas.js`, `preguntas.js` o `pruebas.js` sin tocar `app.js` ni `examen.js`.
 
 Agregar una tarjeta en `flashcards.js`:
 
