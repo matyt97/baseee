@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Base de Datos — Sala de estudio</title>
+<meta name="description" content="Sala de estudio interactiva para el ramo de Base de Datos: modelo relacional, esquema HR de Oracle, SQL y generador de pruebas.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/estilos.css">
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Universidad Central · Ingeniería Civil en Computación</p>
+    <h1>Base de datos<br><em>relacionales</em>, en serio.</h1>
+    <p class="sub">Sala de estudio para las tres pruebas del ramo: modelo relacional, SQL y SQL avanzado sobre Oracle. Todo apunta al esquema HR y a la sintaxis que usa el profe.</p>
+    <div class="pill-row">
+      <span class="pill">Oracle XE</span>
+      <span class="pill">SQL Developer</span>
+      <span class="pill">SQL Data Modeler</span>
+      <span class="pill">Esquema HR</span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="navinner" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-p="p-esquema">esquema_hr</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="p-tarjetas">recuerdo_activo</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="p-sql">consultas</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="p-pensar">preguntas_trampa</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="p-feynman">explícalo_tú</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="p-prueba">generar_prueba</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="p-metodo">cómo_estudiar</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- ============ ESQUEMA ============ -->
+<section class="panel" id="p-esquema" role="tabpanel">
+  <div class="sec-head"><span class="sec-num">01</span><h2>El esquema HR</h2></div>
+  <p class="lede">Toca cada tabla para ver sus columnas, claves y con quién se relaciona. Si logras reconstruir este diagrama de memoria, la prueba 1 está resuelta.</p>
+
+  <div class="legend">
+    <span style="color:#CFC7FF">■ clave primaria</span>
+    <span style="color:#B4EDE4">■ clave foránea</span>
+    <span>■ atributo común</span>
+  </div>
+
+  <div class="schema" id="schema"></div>
+  <div class="detail" id="entDetail">
+    <h4>Selecciona una tabla</h4>
+    <p style="margin:0;color:#B4C6D6;font-size:14.5px">Empieza por EMPLOYEES: es la tabla central y la que más aparece en las consultas.</p>
+  </div>
+
+  <h3>Prueba de reconstrucción</h3>
+  <div class="card">
+    <p style="margin-top:0;font-size:14.5px;color:#C3D2E0">Sin mirar arriba: escribe las 7 tablas y, al lado de cada una, sus claves foráneas. Después compara.</p>
+    <div class="field"><textarea id="reconstruir" placeholder="EMPLOYEES → job_id, manager_id, department_id&#10;DEPARTMENTS → ..."></textarea></div>
+    <div class="btn-row">
+      <button class="btn" id="verReconstruccion">Comparar con la respuesta</button>
+      <button class="btn ghost" id="limpiarRecon">Borrar</button>
+    </div>
+    <div class="key" id="reconKey" hidden></div>
+  </div>
+</section>
+
+<!-- ============ TARJETAS ============ -->
+<section class="panel" id="p-tarjetas" role="tabpanel" hidden>
+  <div class="sec-head"><span class="sec-num">02</span><h2>Recuerdo activo</h2></div>
+  <p class="lede">Intenta responder <em>en voz alta</em> antes de dar vuelta la tarjeta. El esfuerzo de recordar es lo que fija la memoria — leer apuntes no sirve ni la mitad. Lo que marcas como fallado vuelve a aparecer.</p>
+
+  <div class="field" style="max-width:280px">
+    <label class="fld" for="fcTema">Mazo</label>
+    <select id="fcTema">
+      <option value="all">Todos los temas</option>
+      <option value="Modelo relacional">Modelo relacional (P1)</option>
+      <option value="Esquema HR">Esquema HR</option>
+      <option value="Normalización">Normalización</option>
+      <option value="SQL básico">SQL básico (P2)</option>
+      <option value="SQL avanzado">SQL avanzado (P3)</option>
+      <option value="Oracle">Particularidades Oracle</option>
+    </select>
+  </div>
+
+  <div class="card fc" id="fcCard">
+    <span class="tag" id="fcTag">—</span>
+    <div class="q" id="fcQ">Cargando…</div>
+    <div class="a" id="fcA" hidden></div>
+  </div>
+  <div class="btn-row" id="fcControls">
+    <button class="btn" id="fcFlip">Mostrar respuesta</button>
+  </div>
+  <p class="counter" id="fcCounter"></p>
+</section>
+
+<!-- ============ SQL ============ -->
+<section class="panel" id="p-sql" role="tabpanel">
+  <div class="sec-head"><span class="sec-num">03</span><h2>Consultas</h2></div>
+  <p class="lede">Escribe la consulta primero, sin mirar. Después revela la solución y compara: lo importante no es que sea idéntica, sino que devuelva lo mismo.</p>
+  <div id="sqlList"></div>
+</section>
+
+<!-- ============ PENSAR ============ -->
+<section class="panel" id="p-pensar" role="tabpanel" hidden>
+  <div class="sec-head"><span class="sec-num">04</span><h2>Preguntas trampa</h2></div>
+  <p class="lede">Estas son las que separan al que entendió del que memorizó. Piensa tu respuesta antes de abrir cada una — si la abres sin intentar, no aprendes nada.</p>
+  <div id="thinkList"></div>
+</section>
+
+<!-- ============ FEYNMAN ============ -->
+<section class="panel" id="p-feynman" role="tabpanel">
+  <div class="sec-head"><span class="sec-num">05</span><h2>Explícalo tú</h2></div>
+  <p class="lede">Técnica Feynman: explica el concepto como si se lo enseñaras a alguien que nunca programó. Donde te trabes o uses palabras difíciles sin poder definirlas, ahí está el hoyo. Se guarda solo.</p>
+
+  <div class="field" style="max-width:340px">
+    <label class="fld" for="fyTema">Concepto a explicar</label>
+    <select id="fyTema"></select>
+  </div>
+  <div class="card">
+    <p id="fyPrompt" style="margin-top:0;color:var(--manila);font-size:14.5px"></p>
+    <div class="field"><textarea id="fyTexto" placeholder="Escríbelo con tus palabras, sin copiar del apunte…"></textarea></div>
+    <div class="btn-row">
+      <button class="btn" id="fyGuardar">Guardar explicación</button>
+      <button class="btn ghost" id="fyPista">Ver los puntos que deberías mencionar</button>
+    </div>
+    <div class="key" id="fyKey" hidden></div>
+    <p class="note" id="fyEstado"></p>
+  </div>
+</section>
+
+<!-- ============ PRUEBA ============ -->
+<section class="panel" id="p-prueba" role="tabpanel">
+  <div class="sec-head"><span class="sec-num">06</span><h2>Generar prueba</h2></div>
+  <p class="lede">Arma una prueba distinta cada vez, con el formato y el nivel de las del ramo. Hazla con cronómetro y sin apuntes: es la única forma de saber cómo estás realmente.</p>
+
+  <div class="card no-print">
+    <div class="grid2">
+      <div class="field">
+        <label class="fld" for="exTipo">Prueba</label>
+        <select id="exTipo">
+          <option value="1">Prueba 1 — Modelo relacional</option>
+          <option value="2">Prueba 2 — SQL</option>
+          <option value="3">Prueba 3 — SQL avanzado</option>
+          <option value="mix">Examen final — mezcla de todo</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="fld" for="exN">Cantidad de preguntas</label>
+        <input type="number" id="exN" min="4" max="14" value="8">
+      </div>
+      <div class="field">
+        <label class="fld" for="exMin">Minutos</label>
+        <input type="number" id="exMin" min="10" max="120" value="45">
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="exGen">Generar prueba</button>
+      <button class="btn ghost" id="exPrint">Imprimir</button>
+    </div>
+  </div>
+
+  <div id="exWrap" hidden>
+    <div class="card no-print" style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+      <div><span class="timer" id="exTimer">45:00</span></div>
+      <button class="btn ghost" id="exPause">Pausar</button>
+      <button class="btn" id="exFinish" style="margin-left:auto">Terminar y corregir</button>
+    </div>
+    <div class="card" id="exBody"></div>
+    <div class="card no-print" id="exResult" hidden>
+      <h3 style="margin-top:0">Resultado</h3>
+      <div class="big" id="exScore">—</div>
+      <div class="scorebar"><i id="exBar"></i></div>
+      <p id="exVerdict" style="color:#C3D2E0;font-size:15px"></p>
+      <p class="note" id="exWeak"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MÉTODO ============ -->
+<section class="panel" id="p-metodo" role="tabpanel">
+  <div class="sec-head"><span class="sec-num">07</span><h2>Cómo estudiar esto</h2></div>
+  <p class="lede">No es motivación genérica: son los métodos con mejor evidencia aplicados a este ramo en concreto.</p>
+
+  <div class="method"><b>Recuerdo activo</b><p>Cierra el apunte y trata de recuperar la respuesta desde cero. Releer se siente productivo y no lo es. Usa la pestaña de tarjetas antes de volver a leer nada.</p></div>
+  <div class="method"><b>Repaso espaciado</b><p>Mejor 25 minutos hoy, mañana y pasado, que 90 minutos de una. Cada tema debería tocarse al menos tres veces en días distintos antes de la prueba.</p></div>
+  <div class="method"><b>Práctica intercalada</b><p>No hagas 10 JOINs seguidos. Mezcla: un JOIN, una de normalización, una de cardinalidad. Cuesta más y por eso funciona: te obliga a elegir la herramienta, que es justo lo que pide la prueba.</p></div>
+  <div class="method"><b>Práctica de examen</b><p>Simula la prueba completa, con reloj y sin apuntes, al menos dos veces antes de cada evaluación. Genera una en la pestaña anterior.</p></div>
+  <div class="method"><b>Técnica Feynman</b><p>Explica el concepto en voz alta como si le enseñaras a alguien de otra carrera. Si necesitas la jerga para explicarlo, todavía no lo entiendes.</p></div>
+  <div class="method"><b>Interrogación elaborativa</b><p>Frente a cada regla pregúntate «¿por qué es así?». ¿Por qué la FK va en el lado «muchos»? Entender el motivo hace que no tengas que memorizar el resultado.</p></div>
+  <div class="method"><b>Práctica en el motor real</b><p>Todo lo de SQL escríbelo en SQL Developer conectado a tu Oracle XE, no en papel. Los errores de sintaxis que cometes ahí son exactamente los que cometerás en la prueba.</p></div>
+
+  <h3>Plan de las tres semanas previas a cada prueba</h3>
+  <div class="card">
+    <ul style="margin:0;padding-left:20px;font-size:14.5px;color:#C3D2E0;line-height:1.8">
+      <li><b style="color:var(--manila)">Semana 1</b> — leer el contenido una vez y pasarlo a tarjetas propias. Reconstruir el esquema HR de memoria.</li>
+      <li><b style="color:var(--manila)">Semana 2</b> — solo ejercicios. Nada de leer. Consultas en SQL Developer + preguntas trampa.</li>
+      <li><b style="color:var(--manila)">Semana 3</b> — dos pruebas simuladas cronometradas, y estudiar únicamente lo que fallaste en ellas.</li>
+      <li><b style="color:var(--manila)">Día antes</b> — repaso ligero de tarjetas falladas. No materia nueva. Dormir.</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<script src="assets/js/data/schema.js"></script>
+<script src="assets/js/data/flashcards.js"></script>
+<script src="assets/js/data/consultas.js"></script>
+<script src="assets/js/data/preguntas.js"></script>
+<script src="assets/js/data/pruebas.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

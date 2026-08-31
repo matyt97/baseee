@@ -1,0 +1,43 @@
+const THINK = [
+ {q:"¿Por qué la clave foránea va en el lado «muchos» de una relación 1:N y no al revés?",
+  a:"Porque si la pusieras en el lado «uno» tendrías que guardar varios valores en una sola celda (una lista de empleados dentro del departamento), y eso rompe la primera forma normal. Poniéndola en el lado «muchos», cada fila guarda un único valor: su departamento."},
+ {q:"Si EMPLOYEES.manager_id apunta a EMPLOYEES.employee_id, ¿cómo insertas al primer empleado de la empresa?",
+  a:"Con manager_id en NULL, porque el presidente no tiene jefe. Por eso esa FK debe ser opcional. Es el argumento de por qué la integridad referencial acepta NULL: una FK nula significa «no hay relación», no una relación inválida."},
+ {q:"DEPARTMENTS tiene manager_id que apunta a EMPLOYEES, y EMPLOYEES tiene department_id que apunta a DEPARTMENTS. ¿No es eso una referencia circular imposible?",
+  a:"No, porque al menos una de las dos FK admite NULL. Insertas primero el departamento con manager_id en NULL, luego el empleado con su department_id, y finalmente actualizas el departamento con su manager. Es el caso clásico de por qué el orden de inserción importa."},
+ {q:"¿Por qué COUNT(*) y COUNT(commission_pct) dan resultados distintos sobre la misma tabla?",
+  a:"Porque COUNT(*) cuenta filas y COUNT(columna) cuenta valores no nulos de esa columna. La mayoría de los empleados no recibe comisión, así que tienen NULL ahí. Es la demostración de que NULL no es cero ni cadena vacía: es ausencia de valor."},
+ {q:"Cambias un INNER JOIN por un LEFT JOIN en una consulta que cuenta empleados por departamento. ¿Qué cambia en el resultado y por qué?",
+  a:"Con LEFT JOIN aparecen los departamentos que no tienen ningún empleado, con conteo 0. Con INNER JOIN esas filas desaparecen porque no encuentran pareja. Cuando la pregunta dice «todos los departamentos», casi siempre pide LEFT JOIN."},
+ {q:"¿Por qué no puedes escribir WHERE AVG(salary) > 8000?",
+  a:"Porque el WHERE se evalúa antes del GROUP BY, y en ese momento los grupos todavía no existen, así que no hay ningún promedio que calcular. Esa condición va en HAVING, que corre después de agrupar."},
+ {q:"Una tabla tiene PK simple y está en 1FN. ¿Puede violar la 2FN?",
+  a:"No. La 2FN prohíbe dependencias parciales de una PK compuesta; si la PK tiene un solo atributo, no hay «parte» de la clave de la cual depender. Con PK simple, estar en 1FN implica estar en 2FN."},
+ {q:"Guardas department_name dentro de la tabla EMPLOYEES «para no hacer JOIN». ¿Qué se rompe exactamente?",
+  a:"La 3FN, por dependencia transitiva: department_name depende de department_id, que no es clave. Consecuencias reales: si el departamento cambia de nombre debes actualizar cientos de filas (anomalía de actualización) y si borras al último empleado pierdes el nombre del departamento (anomalía de borrado)."},
+ {q:"Si el modelo relacional obliga a normalizar, ¿por qué existen bases como MongoDB que hacen lo contrario?",
+  a:"Porque normalizar optimiza integridad y evita redundancia, pero exige JOINs que cuestan caro y dificultan repartir los datos entre muchos servidores. MongoDB duplica datos a propósito para leer todo de una vez y escalar horizontalmente, sacrificando consistencia estricta. Es un intercambio, no un error."},
+ {q:"¿Qué gana el álgebra relacional que no da SQL, si al final ambos hacen lo mismo?",
+  a:"El álgebra relacional es el fundamento formal: define operaciones (selección, proyección, unión, diferencia, producto, join) sobre conjuntos, y permite demostrar que dos consultas distintas son equivalentes. Eso es exactamente lo que hace el optimizador de Oracle al reescribir tu consulta antes de ejecutarla."},
+ {q:"Creas un índice sobre EMPLOYEES.salary y las consultas van más rápido. ¿Por qué no indexar entonces todas las columnas?",
+  a:"Porque cada índice ocupa espacio y debe actualizarse en cada INSERT, UPDATE y DELETE. Indexar todo haría las lecturas algo más rápidas y las escrituras mucho más lentas. Se indexa lo que se busca y se une con frecuencia, no todo."},
+ {q:"Haces DELETE de 100 filas y cierras SQL Developer sin más. ¿Se borraron?",
+  a:"No necesariamente: en Oracle el DML abre una transacción que no se hace permanente hasta el COMMIT. Al cerrar la sesión sin confirmar, se hace ROLLBACK y las filas siguen ahí. Es la diferencia entre atomicidad y durabilidad en ACID."}
+];
+
+const FEYNMAN = [
+ {k:"Clave foránea",p:"Explica qué es una clave foránea a alguien que nunca vio una base de datos, sin usar la palabra «tabla».",
+  pts:["Es un dato que apunta a otro registro para conectarlos","Debe existir en el otro lado, si no la conexión queda rota (integridad referencial)","Puede quedar vacía si la conexión es opcional","En el esquema HR: department_id en EMPLOYEES apunta al departamento donde trabaja"]},
+ {k:"Normalización",p:"Explica por qué normalizar, usando un ejemplo concreto de algo que se rompe si no lo haces.",
+  pts:["Evita repetir el mismo dato en muchas filas","Anomalía de actualización: cambiar un nombre obliga a tocar cientos de filas","Anomalía de borrado: eliminar una fila hace desaparecer información no relacionada","Anomalía de inserción: no poder registrar algo porque falta un dato de otra entidad","1FN atómico, 2FN sin dependencias parciales, 3FN sin transitivas"]},
+ {k:"JOIN",p:"Explica qué hace un JOIN y en qué se diferencia INNER de LEFT, con un ejemplo del esquema HR.",
+  pts:["Combina filas de dos tablas según una condición de igualdad","INNER: solo las filas que hacen match en ambos lados","LEFT: todas las de la izquierda, con NULL donde no hay match","Ejemplo: departamentos sin empleados aparecen con LEFT, desaparecen con INNER"]},
+ {k:"NULL",p:"Explica qué es NULL y por qué no es lo mismo que cero ni que texto vacío.",
+  pts:["Significa ausencia de valor, no un valor","Cualquier operación aritmética con NULL da NULL","No se compara con = sino con IS NULL","COUNT(columna) ignora los NULL, COUNT(*) no","NVL permite sustituirlo por un valor por defecto"]},
+ {k:"Transacción",p:"Explica qué es una transacción y qué significan las siglas ACID, con un ejemplo cotidiano.",
+  pts:["Conjunto de operaciones que se aplican todas o ninguna","Atomicidad: todo o nada","Consistencia: la base queda en estado válido","Aislamiento: transacciones simultáneas no se pisan","Durabilidad: lo confirmado sobrevive a una caída","COMMIT confirma, ROLLBACK deshace"]},
+ {k:"Relacional vs no relacional",p:"Explica la diferencia entre una base relacional y MongoDB, y cuándo elegirías cada una.",
+  pts:["Relacional: esquema fijo, tablas, integridad referencial, ACID","MongoDB: documentos JSON, esquema flexible, sin JOIN nativo","Relacional para datos estructurados con relaciones fuertes (banca, ERP)","No relacional para datos variables y escalado horizontal","Es un intercambio entre consistencia y escalabilidad"]},
+ {k:"Relación reflexiva",p:"Explica cómo puede una tabla relacionarse consigo misma y por qué tiene sentido.",
+  pts:["Una FK apunta a la PK de su propia tabla","En HR: manager_id apunta a employee_id","Modela jerarquías: un empleado es jefe de otros empleados","Debe admitir NULL para el nodo raíz de la jerarquía","Se consulta con self-join usando dos alias"]}
+];
